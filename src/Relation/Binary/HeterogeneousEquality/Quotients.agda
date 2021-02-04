@@ -90,7 +90,7 @@ module _ (ext : ∀ {a b} {A : Set a} {B₁ B₂ : A → Set b} {f₁ : ∀ a �
     module Qu₁ = Quotient Qu₁
     module Qu₂ = Quotient Qu₂
 
-    module _  {B : _ → _ → Set c} (f : ∀ s₁ s₂ → B (Qu₁.abs s₁) (Qu₂.abs s₂)) where
+    module _  {B : Qu₁.Q → Qu₂.Q → Set c} (f : ∀ s₁ s₂ → B (Qu₁.abs s₁) (Qu₂.abs s₂)) where
 
      compat₂ : Set _
      compat₂ = ∀ {a b a′ b′} → a S₁.≈ a′ → b S₂.≈ b′ → f a b ≅ f a′ b′
@@ -107,7 +107,7 @@ module _ (ext : ∀ {a b} {A : Set a} {B₁ B₂ : A → Set b} {f₁ : ∀ a �
      lift₂-conv : (p : compat₂) → ∀ a a′ → lift₂ p (Qu₁.abs a) (Qu₂.abs a′) ≅ f a a′
      lift₂-conv p a a′ = begin
        lift₂ p (Qu₁.abs a) (Qu₂.abs a′)
-          ≅⟨ cong (_$ (Qu₂.abs a′)) (Qu₁.lift-conv (Lift₂.g p) (ext ∘ Lift₂.g-ext p) a) ⟩
+          ≅⟨ cong (λ x → x (Qu₂.abs a′)) (Qu₁.lift-conv {λ x → (a₁ : Qu₂.Q) → B x a₁} (Lift₂.g p) (ext ∘ Lift₂.g-ext p) a) ⟩
        Lift₂.g p a (Qu₂.abs a′)
           ≡⟨⟩
        Qu₂.lift (B (Qu₁.abs a)) (f a) (p S₁.refl) (Qu₂.abs a′)
